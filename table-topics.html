@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Toastmasters Table Topics</title>
+  <title>Table Topics Trainer | SpeakStrong</title>
 
   <style>
     :root {
@@ -19,6 +19,11 @@
       --orange: #ffd29a;
       --red: #ff8a8a;
       --shadow: 0 20px 45px rgba(31, 41, 51, 0.12);
+      --pink: #ff5ea8;
+      --blue: #5b7cfa;
+      --purple: #7c3aed;
+      --orange-brand: #ff9f1c;
+      --lime: #d9ff66;
     }
 
     * {
@@ -29,7 +34,11 @@
       margin: 0;
       min-height: 100vh;
       font-family: Inter, Arial, sans-serif;
-      background: var(--bg);
+      background:
+        radial-gradient(circle at 10% 8%, rgba(255, 94, 168, 0.22), transparent 26%),
+        radial-gradient(circle at 82% 10%, rgba(91, 124, 250, 0.22), transparent 28%),
+        radial-gradient(circle at 78% 82%, rgba(217, 255, 102, 0.38), transparent 26%),
+        linear-gradient(135deg, #fff7ed 0%, #eef2ff 48%, #fdf2f8 100%);
       color: var(--text);
       transition: background-color 0.5s;
     }
@@ -84,6 +93,80 @@
       max-width: 720px;
       line-height: 1.5;
     }
+
+
+    .top-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .brand-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 950;
+      font-size: 20px;
+      letter-spacing: -0.5px;
+    }
+
+    .brand-logo {
+      width: 38px;
+      height: 38px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--purple), var(--blue));
+      display: grid;
+      place-items: center;
+      color: white;
+      box-shadow: 0 12px 30px rgba(91, 124, 250, 0.28);
+      transform: rotate(-6deg);
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--muted);
+      background: rgba(255,255,255,0.7);
+      border: 1px solid rgba(255,255,255,0.75);
+      text-decoration: none;
+      font-weight: 850;
+      border-radius: 999px;
+      padding: 10px 14px;
+      backdrop-filter: blur(12px);
+    }
+
+
+    .page-title {
+      background: linear-gradient(90deg, var(--purple), var(--pink), var(--orange-brand));
+      -webkit-background-clip: text;
+      color: transparent;
+      font-size: clamp(46px, 8vw, 82px);
+      line-height: 0.92;
+      letter-spacing: -3.5px;
+      font-weight: 950;
+      margin: 0 0 10px;
+    }
+
+    .page-subtitle {
+      font-size: clamp(17px, 2.2vw, 22px);
+      color: #475467;
+      margin: 0 auto;
+      max-width: 720px;
+      line-height: 1.4;
+      font-weight: 650;
+    }
+
+    .question-placeholder {
+      color: var(--muted);
+      font-size: clamp(24px, 4vw, 38px);
+      font-weight: 850;
+    }
+
 
     .grid {
       display: grid;
@@ -495,6 +578,34 @@
         margin-bottom: 10px;
       }
 
+      .top-nav {
+        margin-bottom: 14px;
+      }
+
+      .brand-link {
+        font-size: 18px;
+      }
+
+      .brand-logo {
+        width: 34px;
+        height: 34px;
+      }
+
+      .back-link {
+        font-size: 13px;
+        padding: 8px 10px;
+      }
+
+      .page-title {
+        font-size: clamp(40px, 13vw, 58px);
+        letter-spacing: -2.4px;
+      }
+
+      .page-subtitle {
+        font-size: 15px;
+      }
+
+
       .badge {
         display: none;
       }
@@ -719,18 +830,26 @@
 <body>
   <main class="page">
     <section class="hero">
-      <div class="badge">🎙️ Table Topics Practice Tool</div>
-      <h1>Toastmasters Table Topics</h1>
-      <p class="subtitle">
-        Generate a question, start the timer, optionally record the response, and download the audio or transcript afterwards.
+      <div class="top-nav">
+        <a class="brand-link" href="index.html">
+          <span class="brand-logo">🎤</span>
+          <span>SpeakStrong</span>
+        </a>
+
+        <a class="back-link" href="index.html">← Back to home</a>
+      </div>
+
+      <h1 class="page-title">Table Topics Trainer</h1>
+      <p class="page-subtitle">
+        Practice impromptu speaking, build confidence and sharpen your Table Topics skills.
       </p>
     </section>
 
     <section class="grid">
       <div class="card question-card">
         <div>
-          <div class="card-label">Your question</div>
-          <div id="question"></div>
+          <div class="card-label">Your Table Topic</div>
+          <div id="question" class="question-placeholder">🎲 Click <strong>New Question</strong> to get your first Table Topic.</div>
         </div>
 
         <div class="question-footer">
@@ -870,7 +989,13 @@ async function loadQuestions() {
     }
 
     remainingQuestions = [...questions];
-    loadQuestions();
+
+    const questionCount = document.getElementById("questionCount");
+    if (questionCount) {
+      questionCount.innerText = questions.length + " questions loaded";
+    }
+
+    resetSession(false);
 
   } catch (error) {
     console.error(error);
@@ -888,7 +1013,12 @@ async function loadQuestions() {
       status.innerText = "Could not load questions.json, so fallback questions are being used.";
     }
 
-    loadQuestions();
+    const questionCount = document.getElementById("questionCount");
+    if (questionCount) {
+      questionCount.innerText = questions.length + " fallback questions loaded";
+    }
+
+    resetSession(false);
   }
 }
 
@@ -922,7 +1052,9 @@ function newQuestion() {
     return;
   }
 
-  document.getElementById("question").innerText = getRandomQuestion();
+  const questionElement = document.getElementById("question");
+  questionElement.classList.remove("question-placeholder");
+  questionElement.innerText = getRandomQuestion();
   document.getElementById("questionCount").innerText = questions.length + " questions loaded";
   resetSession(false);
 }

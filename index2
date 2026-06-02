@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SpeakStrong</title>
+
+  <style>
+    :root {
+      --ink: #101828;
+      --muted: #667085;
+      --cream: #fff7ed;
+      --lime: #d9ff66;
+      --pink: #ff5ea8;
+      --blue: #5b7cfa;
+      --purple: #7c3aed;
+      --orange: #ff9f1c;
+      --green: #12b76a;
+      --card: rgba(255, 255, 255, 0.84);
+      --border: rgba(255, 255, 255, 0.55);
+      --shadow: 0 24px 70px rgba(16, 24, 40, 0.18);
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, Arial, sans-serif;
+      color: var(--ink);
+      overflow-x: hidden;
+      background:
+        radial-gradient(circle at 10% 10%, rgba(255, 94, 168, 0.34), transparent 26%),
+        radial-gradient(circle at 82% 8%, rgba(91, 124, 250, 0.34), transparent 28%),
+        radial-gradient(circle at 78% 82%, rgba(217, 255, 102, 0.62), transparent 26%),
+        linear-gradient(135deg, #fff7ed 0%, #eef2ff 48%, #fdf2f8 100%);
+    }
+
+    .noise {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.08;
+      background-image:
+        linear-gradient(90deg, rgba(0,0,0,.08) 1px, transparent 1px),
+        linear-gradient(rgba(0,0,0,.08) 1px, transparent 1px);
+      background-size: 32px 32px;
+      mask-image: linear-gradient(to bottom, black, transparent 85%);
+    }
+
+    .blob {
+      position: fixed;
+      border-radius: 999px;
+      filter: blur(6px);
+      opacity: 0.85;
+      pointer-events: none;
+      animation: float 8s ease-in-out infinite;
+    }
+
+    .blob.one {
+      width: 170px;
+      height: 170px;
+      background: var(--pink);
+      left: -50px;
+      top: 140px;
+    }
+
+    .blob.two {
+      width: 210px;
+      height: 210px;
+      background: var(--lime);
+      right: -70px;
+      top: 240px;
+      animation-delay: -2s;
+    }
+
+    .blob.three {
+      width: 120px;
+      height: 120px;
+      background: var(--orange);
+      left: 72%;
+      bottom: 60px;
+      animation-delay: -4s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-22px) rotate(8deg); }
+    }
+
+    .page {
+      position: relative;
+      z-index: 2;
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0 46px;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 46px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 950;
+      font-size: 24px;
+      letter-spacing: -0.8px;
+    }
+
+    .logo {
+      width: 44px;
+      height: 44px;
+      border-radius: 15px;
+      background: linear-gradient(135deg, var(--purple), var(--blue));
+      display: grid;
+      place-items: center;
+      color: white;
+      box-shadow: 0 12px 30px rgba(91, 124, 250, 0.38);
+      transform: rotate(-6deg);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .nav-pill {
+      color: var(--ink);
+      text-decoration: none;
+      font-weight: 850;
+      background: rgba(255, 255, 255, 0.62);
+      border: 1px solid rgba(255,255,255,0.7);
+      padding: 10px 14px;
+      border-radius: 999px;
+      backdrop-filter: blur(12px);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+      gap: 32px;
+      align-items: center;
+      margin-bottom: 34px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.72);
+      border: 1px solid rgba(255,255,255,0.72);
+      border-radius: 999px;
+      padding: 9px 14px;
+      font-weight: 900;
+      color: #344054;
+      box-shadow: 0 10px 30px rgba(16, 24, 40, 0.08);
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      font-size: clamp(52px, 9vw, 112px);
+      line-height: 0.88;
+      letter-spacing: -5.5px;
+      margin: 0 0 22px;
+    }
+
+    .gradient-text {
+      background: linear-gradient(90deg, var(--purple), var(--pink), var(--orange));
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .lead {
+      font-size: clamp(19px, 2.2vw, 25px);
+      line-height: 1.32;
+      color: #344054;
+      max-width: 760px;
+      margin: 0 0 18px;
+      font-weight: 650;
+    }
+
+    .proof {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(18, 183, 106, 0.12);
+      color: #027a48;
+      font-weight: 900;
+      margin-bottom: 28px;
+      border: 1px solid rgba(18, 183, 106, 0.25);
+    }
+
+    .cta-row {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      border-radius: 18px;
+      padding: 16px 22px;
+      font-size: 17px;
+      font-weight: 950;
+      text-decoration: none;
+      transition: transform 0.16s, box-shadow 0.16s;
+    }
+
+    .button:hover { transform: translateY(-2px); }
+
+    .primary {
+      color: white;
+      background: linear-gradient(135deg, var(--ink), #344054);
+      box-shadow: 0 18px 40px rgba(16, 24, 40, 0.26);
+    }
+
+    .secondary {
+      color: var(--ink);
+      background: rgba(255,255,255,0.75);
+      border: 1px solid rgba(255,255,255,0.78);
+      box-shadow: 0 14px 34px rgba(16, 24, 40, 0.1);
+    }
+
+    .demo-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 34px;
+      box-shadow: var(--shadow);
+      padding: 22px;
+      backdrop-filter: blur(16px);
+      transform: rotate(2deg);
+    }
+
+    .demo-inner {
+      background: #101828;
+      color: white;
+      border-radius: 24px;
+      padding: 24px;
+      min-height: 372px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .demo-inner::before {
+      content: "";
+      position: absolute;
+      width: 260px;
+      height: 260px;
+      border-radius: 999px;
+      background: radial-gradient(circle, rgba(255,94,168,.72), transparent 62%);
+      right: -80px;
+      top: -90px;
+    }
+
+    .demo-label {
+      position: relative;
+      z-index: 1;
+      display: inline-flex;
+      width: fit-content;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.12);
+      font-weight: 900;
+      color: rgba(255,255,255,0.86);
+    }
+
+    .available-chip {
+      position: relative;
+      z-index: 1;
+      display: inline-flex;
+      width: fit-content;
+      margin-top: 12px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(18, 183, 106, 0.18);
+      color: #a6f4c5;
+      border: 1px solid rgba(166, 244, 197, 0.4);
+      font-weight: 950;
+      letter-spacing: 0.4px;
+    }
+
+    .demo-question {
+      position: relative;
+      z-index: 1;
+      font-size: 34px;
+      line-height: 1.08;
+      font-weight: 950;
+      letter-spacing: -1.5px;
+      margin: 28px 0;
+    }
+
+    .timer-preview {
+      position: relative;
+      z-index: 1;
+      font-size: 74px;
+      line-height: 1;
+      font-weight: 950;
+      letter-spacing: -3px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .mini-controls {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 18px;
+    }
+
+    .mini-controls span {
+      background: rgba(255,255,255,0.14);
+      border: 1px solid rgba(255,255,255,0.13);
+      padding: 10px;
+      border-radius: 14px;
+      text-align: center;
+      font-weight: 850;
+      color: rgba(255,255,255,0.9);
+    }
+
+    .section-heading {
+      margin: 42px 0 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      font-size: 38px;
+      letter-spacing: -1.2px;
+    }
+
+    .section-heading p {
+      margin: 0;
+      color: #475467;
+      font-weight: 700;
+      max-width: 560px;
+      line-height: 1.4;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin: 18px 0 34px;
+    }
+
+    .feature-card {
+      position: relative;
+      background: rgba(255,255,255,0.76);
+      border: 1px solid rgba(255,255,255,0.78);
+      border-radius: 26px;
+      padding: 22px;
+      backdrop-filter: blur(14px);
+      box-shadow: 0 16px 36px rgba(16, 24, 40, 0.1);
+      overflow: hidden;
+      min-height: 260px;
+    }
+
+    .feature-card.available {
+      border: 2px solid rgba(18, 183, 106, 0.35);
+      box-shadow: 0 20px 48px rgba(18, 183, 106, 0.16);
+    }
+
+    .feature-card.available::after {
+      content: "AVAILABLE NOW";
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: #ecfdf3;
+      color: #027a48;
+      border: 1px solid #abefc6;
+      padding: 7px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 950;
+      letter-spacing: 0.6px;
+    }
+
+    .feature-card.coming-soon {
+      opacity: 0.88;
+    }
+
+    .feature-card.coming-soon::after {
+      content: "COMING SOON";
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      background: rgba(16, 24, 40, 0.48);
+      color: white;
+      font-size: 22px;
+      font-weight: 950;
+      letter-spacing: 1px;
+      text-shadow: 0 4px 18px rgba(0,0,0,0.35);
+      backdrop-filter: blur(2px);
+    }
+
+    .feature-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 18px;
+      display: grid;
+      place-items: center;
+      font-size: 26px;
+      margin-bottom: 16px;
+      background: var(--lime);
+    }
+
+    .feature-card:nth-child(2) .feature-icon { background: #ffd6e7; }
+    .feature-card:nth-child(3) .feature-icon { background: #dbeafe; }
+    .feature-card:nth-child(4) .feature-icon { background: #ffedd5; }
+
+    .feature-card h3 {
+      margin: 0 0 8px;
+      font-size: 22px;
+      letter-spacing: -0.4px;
+      padding-right: 60px;
+    }
+
+    .feature-card p {
+      margin: 0 0 16px;
+      color: var(--muted);
+      line-height: 1.45;
+      font-weight: 620;
+    }
+
+    .card-link {
+      display: inline-flex;
+      text-decoration: none;
+      color: #027a48;
+      font-weight: 950;
+      margin-top: auto;
+    }
+
+    .why {
+      margin-top: 18px;
+      background: rgba(255,255,255,0.72);
+      border: 1px solid rgba(255,255,255,0.72);
+      border-radius: 30px;
+      padding: 26px;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 18px;
+      align-items: start;
+      box-shadow: 0 14px 34px rgba(16, 24, 40, 0.1);
+    }
+
+    .note-avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 22px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, var(--purple), var(--pink));
+      color: white;
+      font-size: 30px;
+      transform: rotate(-4deg);
+      box-shadow: 0 16px 36px rgba(124, 58, 237, 0.2);
+    }
+
+    .why h2 {
+      margin: 0 0 10px;
+      font-size: 32px;
+      letter-spacing: -1px;
+    }
+
+    .why p {
+      margin: 0 0 10px;
+      color: #344054;
+      font-weight: 700;
+      line-height: 1.48;
+    }
+
+    .roadmap {
+      background: rgba(16, 24, 40, 0.92);
+      color: white;
+      border-radius: 32px;
+      padding: 28px;
+      box-shadow: var(--shadow);
+      margin-top: 28px;
+    }
+
+    .roadmap-header {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 18px;
+      align-items: end;
+      margin-bottom: 20px;
+    }
+
+    .roadmap h2 {
+      margin: 0;
+      font-size: 36px;
+      letter-spacing: -1.2px;
+    }
+
+    .roadmap-intro {
+      margin: 0;
+      color: rgba(255,255,255,0.74);
+      line-height: 1.45;
+      font-weight: 650;
+    }
+
+    .roadmap-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .roadmap-box {
+      background: rgba(255,255,255,0.11);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 22px;
+      padding: 20px;
+    }
+
+    .roadmap-box h3 {
+      margin: 0 0 14px;
+      font-size: 22px;
+    }
+
+    .roadmap-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .roadmap-item {
+      font-weight: 850;
+      color: rgba(255,255,255,0.88);
+    }
+
+    footer {
+      margin-top: 28px;
+      text-align: center;
+      color: var(--muted);
+      font-weight: 750;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 980px) {
+      .features {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 860px) {
+      .page {
+        width: min(100% - 22px, 1120px);
+        padding-top: 18px;
+      }
+
+      nav { margin-bottom: 32px; }
+      .nav-pill { display: none; }
+
+      .hero {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      h1 {
+        letter-spacing: -3.5px;
+        font-size: clamp(48px, 17vw, 78px);
+      }
+
+      .lead { font-size: 19px; }
+
+      .cta-row {
+        display: grid;
+        grid-template-columns: 1fr;
+      }
+
+      .button { width: 100%; }
+      .demo-card { transform: none; }
+      .demo-inner { min-height: 300px; }
+      .demo-question { font-size: 27px; }
+      .timer-preview { font-size: 58px; }
+
+      .section-heading {
+        margin-top: 30px;
+      }
+
+      .section-heading h2 {
+        font-size: 30px;
+      }
+
+      .features {
+        grid-template-columns: 1fr;
+      }
+
+      .feature-card {
+        min-height: 220px;
+      }
+
+      .why {
+        grid-template-columns: 1fr;
+        padding: 22px;
+      }
+
+      .roadmap {
+        padding: 22px;
+        border-radius: 26px;
+      }
+
+      .roadmap-header {
+        grid-template-columns: 1fr;
+      }
+
+      .roadmap-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="noise"></div>
+  <div class="blob one"></div>
+  <div class="blob two"></div>
+  <div class="blob three"></div>
+
+  <main class="page">
+    <nav>
+      <div class="brand">
+        <div class="logo">🎤</div>
+        <span>SpeakStrong</span>
+      </div>
+
+      <div class="nav-links">
+        <a class="nav-pill" href="table-topics.html">Table Topics</a>
+        <a class="nav-pill" href="#features">Features</a>
+        <a class="nav-pill" href="#roadmap">Roadmap</a>
+      </div>
+    </nav>
+
+    <section class="hero">
+      <div>
+        <div class="tag">Built to help you become a stronger speaker.</div>
+        <h1>Become the speaker <span class="gradient-text">people remember.</span></h1>
+        <p class="lead">
+          Start with Table Topics. More Toastmasters tools are coming soon, including speech rehearsal, evaluation coaching and contest preparation.
+        </p>
+
+        <div class="proof">✓ 560+ Table Topic questions available today</div>
+
+        <div class="cta-row">
+          <a class="button primary" href="table-topics.html">Start Table Topics →</a>
+          <a class="button secondary" href="#roadmap">View the Roadmap</a>
+        </div>
+      </div>
+
+      <div class="demo-card">
+        <div class="demo-inner">
+          <div>
+            <div class="demo-label">Available now</div>
+            <div class="available-chip">TABLE TOPICS TRAINER</div>
+            <div class="demo-question">
+              If your life had a warning label, what would it say?
+            </div>
+          </div>
+
+          <div>
+            <div class="timer-preview">01:12</div>
+            <div class="mini-controls">
+              <span>Prompt</span>
+              <span>Timer</span>
+              <span>Score</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="features">
+      <div class="section-heading">
+        <h2>Practice tools</h2>
+        <p>Table Topics is live today. The rest are on the SpeakStrong roadmap, because apparently one tiny app was not enough.</p>
+      </div>
+
+      <div class="features">
+        <article class="feature-card available">
+          <div class="feature-icon">🎲</div>
+          <h3>Table Topics Trainer</h3>
+          <p>
+            Generate hundreds of questions and practise thinking on your feet.
+            Perfect for Table Topics, contests, and building confidence under pressure.
+          </p>
+          <a class="card-link" href="table-topics.html">Launch trainer →</a>
+        </article>
+
+        <article class="feature-card coming-soon">
+          <div class="feature-icon">🎤</div>
+          <h3>Speech Rehearsal</h3>
+          <p>
+            Time, record and review your speeches before club night.
+            Know exactly how your speech sounds before stepping on stage.
+          </p>
+        </article>
+
+        <article class="feature-card coming-soon">
+          <div class="feature-icon">📝</div>
+          <h3>Evaluation Coach</h3>
+          <p>
+            Learn to deliver evaluations that are constructive, memorable and impactful.
+            Turn observations into feedback speakers actually remember.
+          </p>
+        </article>
+
+        <article class="feature-card coming-soon">
+          <div class="feature-icon">⏱️</div>
+          <h3>Contest Timing</h3>
+          <p>
+            Professional timing tools for Table Topics, speeches and evaluations.
+            Green. Amber. Red. No laminated cards required.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section class="why">
+      <div class="note-avatar">🏆</div>
+      <div>
+        <h2>Why SpeakStrong?</h2>
+        <p>
+          Built by a long-time Toastmaster who wanted a better way to practise between meetings.
+        </p>
+        <p>
+          SpeakStrong started as a simple Table Topics tool and is evolving into a complete practice platform for Toastmasters members, evaluators and aspiring speakers.
+        </p>
+        <p>
+          Whether you're preparing for your Ice Breaker, a club speech, or the World Championship stage, SpeakStrong helps you practise with purpose.
+        </p>
+      </div>
+    </section>
+
+    <section id="roadmap" class="roadmap">
+      <div class="roadmap-header">
+        <h2>The Roadmap</h2>
+        <p class="roadmap-intro">
+          Clear today. Ambitious tomorrow. Still less terrifying than being called up for Table Topics with zero warning.
+        </p>
+      </div>
+
+      <div class="roadmap-grid">
+        <div class="roadmap-box">
+          <h3>Available Today</h3>
+          <div class="roadmap-list">
+            <div class="roadmap-item">✓ Table Topics Practice</div>
+            <div class="roadmap-item">✓ Toastmasters Timing Lights</div>
+            <div class="roadmap-item">✓ Recording</div>
+            <div class="roadmap-item">✓ Speech Transcripts</div>
+            <div class="roadmap-item">✓ Practice Scoring</div>
+          </div>
+        </div>
+
+        <div class="roadmap-box">
+          <h3>Coming Soon</h3>
+          <div class="roadmap-list">
+            <div class="roadmap-item">🎤 Speech Practice Studio</div>
+            <div class="roadmap-item">📝 Evaluation Coach</div>
+            <div class="roadmap-item">🤖 AI Speech Feedback</div>
+            <div class="roadmap-item">🏆 Contest Mode</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <strong>SpeakStrong.app</strong><br>
+      Toastmasters practice without the laminated cards.<br>
+      Helping speakers survive Table Topics since 2026.
+    </footer>
+  </main>
+</body>
+</html>

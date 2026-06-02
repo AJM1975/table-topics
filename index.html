@@ -1,193 +1,915 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Toastmasters Table Topic Generator</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Toastmasters Table Topics</title>
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 40px;
-            transition: background-color 0.5s;
-        }
+  <style>
+    :root {
+      --bg: #f6f3ee;
+      --card: #ffffff;
+      --text: #1f2933;
+      --muted: #667085;
+      --primary: #2f4f4f;
+      --primary-dark: #203737;
+      --border: #e4e7ec;
+      --soft: #f9fafb;
+      --green: #b7f7c2;
+      --orange: #ffd29a;
+      --red: #ff8a8a;
+      --shadow: 0 20px 45px rgba(31, 41, 51, 0.12);
+    }
 
-        h1 {
-            margin-bottom: 10px;
-        }
+    * {
+      box-sizing: border-box;
+    }
 
-        #question {
-            font-size: 36px;
-            margin: 40px;
-            min-height: 120px;
-        }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      transition: background-color 0.5s;
+    }
 
-        #timer {
-            font-size: 72px;
-            font-weight: bold;
-            margin: 30px;
-        }
+    body.green {
+      background: var(--green);
+    }
 
-        button {
-            font-size: 20px;
-            padding: 12px 24px;
-            margin: 10px;
-            cursor: pointer;
-        }
+    body.orange {
+      background: var(--orange);
+    }
 
-        .flash {
-            animation: flash 0.5s infinite;
-        }
+    body.red {
+      background: var(--red);
+    }
 
-        @keyframes flash {
-            0% { background-color: red; }
-            50% { background-color: white; }
-            100% { background-color: red; }
-        }
-    </style>
+    .page {
+      width: 100%;
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 28px 18px 44px;
+    }
+
+    .hero {
+      text-align: center;
+      margin-bottom: 22px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.7);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 14px;
+      margin-bottom: 14px;
+    }
+
+    h1 {
+      font-size: clamp(34px, 5vw, 58px);
+      line-height: 1;
+      margin: 0 0 10px;
+      letter-spacing: -1.8px;
+    }
+
+    .subtitle {
+      font-size: 18px;
+      color: var(--muted);
+      margin: 0 auto;
+      max-width: 720px;
+      line-height: 1.5;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(310px, 0.75fr);
+      gap: 20px;
+      align-items: start;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(228, 231, 236, 0.9);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      padding: 26px;
+      backdrop-filter: blur(12px);
+    }
+
+    .question-card {
+      min-height: 440px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .card-label {
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1.4px;
+      margin-bottom: 12px;
+    }
+
+    #question {
+      font-size: clamp(30px, 4.5vw, 52px);
+      line-height: 1.14;
+      font-weight: 850;
+      letter-spacing: -1px;
+      margin: 18px 0 24px;
+    }
+
+    .question-footer {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .pill {
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 9px 13px;
+      background: var(--soft);
+      font-weight: 700;
+      color: var(--muted);
+    }
+
+    .timer-card {
+      text-align: center;
+    }
+
+    #timer {
+      font-size: clamp(64px, 9vw, 104px);
+      line-height: 1;
+      font-weight: 900;
+      letter-spacing: -3px;
+      margin: 16px 0 10px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .timer-hint {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.45;
+      margin-bottom: 20px;
+    }
+
+    .timing-key {
+      display: grid;
+      gap: 8px;
+      margin: 18px 0 20px;
+      text-align: left;
+    }
+
+    .key-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: var(--soft);
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 999px;
+      display: inline-block;
+      flex: 0 0 auto;
+    }
+
+    .dot.green { background: #49c866; }
+    .dot.orange { background: #f79009; }
+    .dot.red { background: #f04438; }
+    .dot.flash-dot {
+      background: #f04438;
+      box-shadow: 0 0 0 4px rgba(240, 68, 56, 0.14);
+    }
+
+    .record-box {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px;
+      background: var(--soft);
+      border-radius: 18px;
+      text-align: left;
+      margin: 16px 0 18px;
+      border: 1px solid var(--border);
+    }
+
+    .record-box input {
+      transform: scale(1.2);
+      margin-top: 4px;
+    }
+
+    .record-title {
+      font-weight: 850;
+      margin-bottom: 4px;
+    }
+
+    .record-note {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    .button-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .mobile-core-actions {
+      display: none;
+    }
+
+    button, a.download-button {
+      border: 0;
+      border-radius: 16px;
+      padding: 14px 18px;
+      font-size: 16px;
+      font-weight: 850;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+    }
+
+    button:hover, a.download-button:hover {
+      transform: translateY(-1px);
+    }
+
+    .primary {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 10px 22px rgba(47, 79, 79, 0.25);
+    }
+
+    .primary:hover {
+      background: var(--primary-dark);
+    }
+
+    .secondary {
+      background: #eef2f6;
+      color: var(--text);
+    }
+
+    .danger {
+      background: #fee4e2;
+      color: #b42318;
+    }
+
+    .download-button {
+      background: #ecfdf3;
+      color: #027a48;
+      margin-top: 12px;
+      width: 100%;
+      border: 1px solid #abefc6;
+    }
+
+    #status {
+      min-height: 24px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 750;
+      margin-top: 14px;
+      line-height: 1.4;
+    }
+
+    .transcript-card {
+      margin-top: 20px;
+    }
+
+    .transcript-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: center;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .transcript-title {
+      margin: 0;
+      font-size: 24px;
+      letter-spacing: -0.5px;
+    }
+
+    #transcript {
+      font-size: 18px;
+      line-height: 1.55;
+      min-height: 150px;
+      background: var(--soft);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+      text-align: left;
+      color: var(--text);
+    }
+
+    .transcript-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .transcript-actions button {
+      font-size: 14px;
+      padding: 10px 14px;
+      border-radius: 12px;
+    }
+
+    .flash {
+      animation: flash 0.5s infinite;
+    }
+
+    @keyframes flash {
+      0% { background-color: #ff4d4d; }
+      50% { background-color: #fff; }
+      100% { background-color: #ff4d4d; }
+    }
+
+    @media (max-width: 840px) {
+      body {
+        padding-bottom: 92px;
+      }
+
+      .page {
+        padding: 12px 10px 28px;
+      }
+
+      .hero {
+        margin-bottom: 10px;
+      }
+
+      .badge {
+        display: none;
+      }
+
+      h1 {
+        font-size: 28px;
+        letter-spacing: -0.8px;
+        margin-bottom: 4px;
+      }
+
+      .subtitle {
+        display: none;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+
+      .card {
+        padding: 14px;
+        border-radius: 18px;
+      }
+
+      .question-card {
+        min-height: auto;
+      }
+
+      .card-label {
+        font-size: 11px;
+        margin-bottom: 4px;
+      }
+
+      #question {
+        font-size: clamp(24px, 7vw, 34px);
+        margin: 8px 0 10px;
+        min-height: 112px;
+        line-height: 1.12;
+      }
+
+      .question-footer {
+        display: none;
+      }
+
+      .timer-card {
+        padding-bottom: 12px;
+      }
+
+      #timer {
+        font-size: clamp(58px, 18vw, 82px);
+        margin: 4px 0 4px;
+      }
+
+      .timer-hint,
+      .timing-key,
+      .record-note {
+        display: none;
+      }
+
+      .record-box {
+        margin: 8px 0 10px;
+        padding: 10px;
+        border-radius: 14px;
+      }
+
+      .record-title {
+        font-size: 14px;
+      }
+
+      .button-row {
+        display: none;
+      }
+
+      .mobile-core-actions {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+        padding: 10px;
+        background: rgba(255, 255, 255, 0.94);
+        border-top: 1px solid var(--border);
+        box-shadow: 0 -10px 30px rgba(31, 41, 51, 0.12);
+        backdrop-filter: blur(12px);
+        z-index: 20;
+      }
+
+      .mobile-core-actions button {
+        font-size: 13px;
+        padding: 12px 6px;
+        border-radius: 14px;
+        margin: 0;
+      }
+
+      #status {
+        font-size: 12px;
+        margin-top: 6px;
+        min-height: 18px;
+      }
+
+      .download-button {
+        margin-top: 6px;
+        padding: 10px 12px;
+        font-size: 14px;
+      }
+
+      .transcript-card {
+        margin-top: 10px;
+      }
+
+      .transcript-header {
+        margin-bottom: 8px;
+      }
+
+      .transcript-title {
+        font-size: 18px;
+      }
+
+      #transcript {
+        min-height: 90px;
+        font-size: 15px;
+        padding: 12px;
+        border-radius: 14px;
+      }
+
+      .transcript-actions button {
+        font-size: 12px;
+        padding: 8px 10px;
+      }
+    }
+  </style>
 </head>
 
-<body id="page">
+<body>
+  <main class="page">
+    <section class="hero">
+      <div class="badge">🎙️ Table Topics Practice Tool</div>
+      <h1>Toastmasters Table Topics</h1>
+      <p class="subtitle">
+        Generate a question, start the timer, optionally record the response, and download the audio or transcript afterwards.
+      </p>
+    </section>
 
-<h1>🎤 Toastmasters Table Topics</h1>
+    <section class="grid">
+      <div class="card question-card">
+        <div>
+          <div class="card-label">Your question</div>
+          <div id="question"></div>
+        </div>
 
-<div id="question"></div>
+        <div class="question-footer">
+          <span class="pill" id="questionCount"></span>
+          <span class="pill">Tip: aim for 1–2 minutes</span>
+        </div>
+      </div>
 
-<div id="timer">00:00</div>
+      <aside class="card timer-card">
+        <div class="card-label">Timer</div>
+        <div id="timer">00:00</div>
+        <div class="timer-hint">
+          The background changes like Toastmasters timing cards. Less cardboard, more drama.
+        </div>
 
-<button onclick="newQuestion()">New Question</button>
-<button onclick="startTimer()">Start</button>
-<button onclick="resetTimer()">Reset</button>
+        <div class="timing-key">
+          <div class="key-row"><span class="dot green"></span> 1:00 — green</div>
+          <div class="key-row"><span class="dot orange"></span> 1:30 — orange</div>
+          <div class="key-row"><span class="dot red"></span> 2:00 — red</div>
+          <div class="key-row"><span class="dot flash-dot"></span> 2:30 — flashing red</div>
+        </div>
+
+        <label class="record-box">
+          <input type="checkbox" id="recordOption" checked />
+          <span>
+            <div class="record-title">Record response and create transcript</div>
+            <div class="record-note">The browser will ask for microphone permission. Audio stays on your device unless you download/share it.</div>
+          </span>
+        </label>
+
+        <div class="button-row">
+          <button class="secondary" onclick="newQuestion()">🎲 New Question</button>
+          <button class="primary" onclick="startSession()">▶ Start</button>
+          <button class="danger" onclick="stopSession()">■ Stop</button>
+          <button class="secondary" onclick="resetSession()">↺ Reset</button>
+        </div>
+
+        <div id="status"></div>
+
+        <a id="downloadLink" class="download-button" style="display:none;">
+          Download Recording
+        </a>
+      </aside>
+    </section>
+
+    <section class="card transcript-card">
+      <div class="transcript-header">
+        <h2 class="transcript-title">Transcript</h2>
+        <div class="transcript-actions">
+          <button class="secondary" onclick="copyTranscript()">Copy Transcript</button>
+          <button class="secondary" onclick="downloadTranscript()">Download Transcript</button>
+          <button class="secondary" onclick="clearTranscript()">Clear</button>
+        </div>
+      </div>
+
+      <div id="transcript">Transcript will appear here when recording starts.</div>
+    </section>
+  </main>
+
+  <div class="mobile-core-actions">
+    <button class="secondary" onclick="newQuestion()">🎲 New</button>
+    <button class="primary" onclick="startSession()">▶ Start</button>
+    <button class="danger" onclick="stopSession()">■ Stop</button>
+    <button class="secondary" onclick="resetSession()">↺ Reset</button>
+  </div>
 
 <script>
-
 const questions = [
-
-"If animals could talk, which would be the rudest?",
-"What invention should never have been invented?",
-"If you were invisible for one day, what would you do?",
-"What is your most useless talent?",
-"What would your autobiography be called?",
-"If your pet became president, what would happen first?",
-"What is something everyone pretends to understand?",
-"If toast could talk, what would it say?",
-"What would you ban immediately if you ruled the world?",
-"What is the strangest thing you've ever eaten?",
-
-"If you could relive one day, which would it be?",
-"What advice would you give your younger self?",
-"What makes a great leader?",
-"What skill should every person learn?",
-"What is one thing technology has improved?",
-"What is one thing technology has ruined?",
-"What does success mean to you?",
-"What is the best lesson you've learned?",
-"What would you do with a million dollars?",
-"What would your dream retirement look like?",
-
-"What fictional character would make a terrible boss?",
-"If aliens landed today, what would you show them first?",
-"If you could swap jobs with anyone, who would it be?",
-"What would be the hardest thing about being famous?",
-"What is your favourite family tradition?",
-"What would you do if you won the lottery?",
-"What makes a speech memorable?",
-"What is something you are grateful for?",
-"What would be your superpower?",
-"What would your superhero name be?",
-
-"If coffee disappeared tomorrow, what would happen?",
-"What is the best invention ever?",
-"What should be taught in schools but isn't?",
-"What is your favourite holiday?",
-"What is one thing on your bucket list?",
-"What is the funniest thing you've witnessed?",
-"What is the best piece of advice you've received?",
-"What would your perfect day look like?",
-"What makes someone trustworthy?",
-"What is the most underrated job?",
-
-"If you could time travel, where would you go?",
-"What is the best book you've ever read?",
-"What is your favourite movie quote?",
-"What would you name a new planet?",
-"If you had to eat one food forever, what would it be?",
-"What would your personal theme song be?",
-"What is your hidden talent?",
-"What is the most adventurous thing you've done?",
-"What would you do if you had no fear?",
-"What would make the world a better place?"
-
+  "If animals could talk, which would be the rudest?",
+  "What invention should never have been invented?",
+  "If you were invisible for one day, what would you do?",
+  "What is your most useless talent?",
+  "What would your autobiography be called?",
+  "If your pet became president, what would happen first?",
+  "What is something everyone pretends to understand?",
+  "If toast could talk, what would it say?",
+  "What would you ban immediately if you ruled the world?",
+  "What is the strangest thing you've ever eaten?",
+  "If you could relive one day, which would it be?",
+  "What advice would you give your younger self?",
+  "What makes a great leader?",
+  "What skill should every person learn?",
+  "What is one thing technology has improved?",
+  "What is one thing technology has ruined?",
+  "What does success mean to you?",
+  "What is the best lesson you've learned?",
+  "What would you do with a million dollars?",
+  "What would your dream retirement look like?",
+  "What fictional character would make a terrible boss?",
+  "If aliens landed today, what would you show them first?",
+  "If you could swap jobs with anyone, who would it be?",
+  "What would be the hardest thing about being famous?",
+  "What is your favourite family tradition?",
+  "What would you do if you won the lottery?",
+  "What makes a speech memorable?",
+  "What is something you are grateful for?",
+  "What would be your superpower?",
+  "What would your superhero name be?",
+  "If coffee disappeared tomorrow, what would happen?",
+  "What is the best invention ever?",
+  "What should be taught in schools but isn't?",
+  "What is your favourite holiday?",
+  "What is one thing on your bucket list?",
+  "What is the funniest thing you've witnessed?",
+  "What is the best piece of advice you've received?",
+  "What would your perfect day look like?",
+  "What makes someone trustworthy?",
+  "What is the most underrated job?",
+  "If you could time travel, where would you go?",
+  "What is the best book you've ever read?",
+  "What is your favourite movie quote?",
+  "What would you name a new planet?",
+  "If you had to eat one food forever, what would it be?",
+  "What would your personal theme song be?",
+  "What is your hidden talent?",
+  "What is the most adventurous thing you've done?",
+  "What would you do if you had no fear?",
+  "What would make the world a better place?",
+  "If your toaster could give you life advice, what would it say?",
+  "You have been appointed Minister for Ridiculous Public Holidays. What new holiday are you creating?",
+  "If socks disappear in the washing machine, where do they actually go?",
+  "You wake up tomorrow and every dog can speak, but only to complain. What is the first thing they say?",
+  "What everyday object would make the worst motivational speaker?",
+  "You are launching a new Olympic sport based on household chores. What is it, and how do you win?",
+  "If aliens landed in your backyard and asked you to explain “small talk,” what would you say?",
+  "What food deserves its own national anthem?",
+  "You have to rename Monday to make it sound more appealing. What do you call it?",
+  "If your life had a warning label, what would it say?"
 ];
 
 let secondsElapsed = 0;
 let timerInterval = null;
+let sessionRunning = false;
+
+let mediaRecorder = null;
+let audioChunks = [];
+let audioStream = null;
+
+let recognition = null;
+let transcriptText = "";
 
 function newQuestion() {
+  const randomIndex = Math.floor(Math.random() * questions.length);
+  document.getElementById("question").innerText = questions[randomIndex];
+  document.getElementById("questionCount").innerText = questions.length + " questions loaded";
+  resetSession(false);
+}
 
-    document.body.classList.remove('flash');
+function startSession() {
+  if (sessionRunning) {
+    setStatus("Already running.");
+    return;
+  }
 
-    const randomIndex =
-        Math.floor(Math.random() * questions.length);
+  sessionRunning = true;
+  hideDownloadLink();
+  startTimer();
 
-    document.getElementById("question").innerHTML =
-        questions[randomIndex];
+  const shouldRecord = document.getElementById("recordOption").checked;
 
-    resetTimer();
+  if (shouldRecord) {
+    startRecording();
+    startTranscription();
+  } else {
+    setStatus("Timer started. Recording is off.");
+    document.getElementById("transcript").innerText =
+      "Recording is off, so no transcript will be created.";
+  }
+}
+
+function stopSession() {
+  if (!sessionRunning && !timerInterval) {
+    setStatus("Stopped.");
+  }
+
+  sessionRunning = false;
+  clearInterval(timerInterval);
+  timerInterval = null;
+
+  if (mediaRecorder && mediaRecorder.state !== "inactive") {
+    mediaRecorder.stop();
+  }
+
+  if (audioStream) {
+    audioStream.getTracks().forEach(track => track.stop());
+    audioStream = null;
+  }
+
+  if (recognition) {
+    try {
+      recognition.stop();
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  setStatus("Stopped. Download options are available if audio or transcript was captured.");
+}
+
+function resetSession(clearStatus = true) {
+  stopSession();
+
+  secondsElapsed = 0;
+  document.body.classList.remove("flash", "green", "orange", "red");
+  document.getElementById("timer").innerText = "00:00";
+
+  transcriptText = "";
+  document.getElementById("transcript").innerText =
+    "Transcript will appear here when recording starts.";
+
+  hideDownloadLink();
+
+  if (clearStatus) {
+    setStatus("");
+  }
 }
 
 function startTimer() {
+  clearInterval(timerInterval);
 
-    clearInterval(timerInterval);
+  timerInterval = setInterval(function() {
+    secondsElapsed++;
 
-    timerInterval = setInterval(function() {
+    const minutes = Math.floor(secondsElapsed / 60);
+    const seconds = secondsElapsed % 60;
 
-        secondsElapsed++;
+    document.getElementById("timer").innerText =
+      String(minutes).padStart(2, "0") + ":" +
+      String(seconds).padStart(2, "0");
 
-        let minutes =
-            Math.floor(secondsElapsed / 60);
+    document.body.classList.remove("green", "orange", "red");
 
-        let seconds =
-            secondsElapsed % 60;
-
-        document.getElementById("timer").innerHTML =
-            String(minutes).padStart(2,'0') +
-            ":" +
-            String(seconds).padStart(2,'0');
-
-        if (secondsElapsed >= 150) {
-            document.body.classList.add('flash');
-        }
-        else if (secondsElapsed >= 120) {
-            document.body.classList.remove('flash');
-            document.body.style.backgroundColor = "red";
-        }
-        else if (secondsElapsed >= 90) {
-            document.body.style.backgroundColor = "orange";
-        }
-        else if (secondsElapsed >= 60) {
-            document.body.style.backgroundColor = "lightgreen";
-        }
-
-    },1000);
+    if (secondsElapsed >= 150) {
+      document.body.classList.add("flash");
+    } else if (secondsElapsed >= 120) {
+      document.body.classList.remove("flash");
+      document.body.classList.add("red");
+    } else if (secondsElapsed >= 90) {
+      document.body.classList.add("orange");
+    } else if (secondsElapsed >= 60) {
+      document.body.classList.add("green");
+    }
+  }, 1000);
 }
 
-function resetTimer() {
+async function startRecording() {
+  try {
+    audioChunks = [];
+    audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
-    clearInterval(timerInterval);
+    mediaRecorder = new MediaRecorder(audioStream);
 
-    secondsElapsed = 0;
+    mediaRecorder.ondataavailable = function(event) {
+      if (event.data.size > 0) {
+        audioChunks.push(event.data);
+      }
+    };
 
-    document.body.classList.remove('flash');
+    mediaRecorder.onstop = function() {
+      if (audioChunks.length === 0) return;
 
-    document.body.style.backgroundColor = "white";
+      const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
+      const audioUrl = URL.createObjectURL(audioBlob);
 
-    document.getElementById("timer").innerHTML =
-        "00:00";
+      const downloadLink = document.getElementById("downloadLink");
+      downloadLink.href = audioUrl;
+      downloadLink.download = createFileName("table-topic-recording", "webm");
+      downloadLink.style.display = "inline-flex";
+      downloadLink.innerText = "⬇ Download Recording";
+    };
+
+    mediaRecorder.start();
+    setStatus("Recording and timer started.");
+
+  } catch (error) {
+    setStatus("Recording could not start. Check microphone permissions.");
+    console.error(error);
+  }
+}
+
+function startTranscription() {
+  const SpeechRecognition =
+    window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  if (!SpeechRecognition) {
+    document.getElementById("transcript").innerText =
+      "Live transcription is not supported in this browser. Try Chrome.";
+    return;
+  }
+
+  transcriptText = "";
+  document.getElementById("transcript").innerText = "";
+
+  recognition = new SpeechRecognition();
+  recognition.continuous = true;
+  recognition.interimResults = true;
+  recognition.lang = "en-AU";
+
+  recognition.onresult = function(event) {
+    let interimTranscript = "";
+
+    for (let i = event.resultIndex; i < event.results.length; i++) {
+      const text = event.results[i][0].transcript;
+
+      if (event.results[i].isFinal) {
+        transcriptText += text.trim() + " ";
+      } else {
+        interimTranscript += text;
+      }
+    }
+
+    document.getElementById("transcript").innerHTML =
+      escapeHtml(transcriptText) +
+      "<em>" + escapeHtml(interimTranscript) + "</em>";
+  };
+
+  recognition.onerror = function(event) {
+    setStatus("Transcription issue: " + event.error);
+  };
+
+  recognition.onend = function() {
+    if (sessionRunning && document.getElementById("recordOption").checked) {
+      try {
+        recognition.start();
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  };
+
+  recognition.start();
+}
+
+function downloadTranscript() {
+  const text = transcriptText.trim();
+
+  if (!text) {
+    alert("No transcript available yet.");
+    return;
+  }
+
+  const blob = new Blob([text], { type: "text/plain" });
+  const url = URL.createObjectURL(blob);
+
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = createFileName("table-topic-transcript", "txt");
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+
+  URL.revokeObjectURL(url);
+}
+
+function copyTranscript() {
+  const text = transcriptText.trim();
+
+  if (!text) {
+    alert("No transcript available yet.");
+    return;
+  }
+
+  navigator.clipboard.writeText(text)
+    .then(() => setStatus("Transcript copied."))
+    .catch(() => alert("Could not copy transcript."));
+}
+
+function clearTranscript() {
+  transcriptText = "";
+  document.getElementById("transcript").innerText =
+    "Transcript cleared.";
+  setStatus("Transcript cleared.");
+}
+
+function hideDownloadLink() {
+  const downloadLink = document.getElementById("downloadLink");
+  downloadLink.style.display = "none";
+  downloadLink.removeAttribute("href");
+}
+
+function setStatus(message) {
+  document.getElementById("status").innerText = message;
+}
+
+function createFileName(prefix, extension) {
+  const now = new Date();
+  const stamp = now.toISOString().replace(/[:.]/g, "-");
+  return prefix + "-" + stamp + "." + extension;
+}
+
+function escapeHtml(text) {
+  return text
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
 }
 
 newQuestion();
-
 </script>
-
 </body>
 </html>

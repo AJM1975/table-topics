@@ -347,6 +347,141 @@
       100% { background-color: #ff4d4d; }
     }
 
+
+    .score-screen {
+      min-height: 100vh;
+      padding: 22px 14px 42px;
+      background: var(--bg);
+    }
+
+    .score-card {
+      max-width: 980px;
+      margin: 0 auto;
+      background: rgba(255,255,255,0.94);
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      padding: 24px;
+    }
+
+    .score-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    #scoreTitle {
+      margin: 0;
+      font-size: 34px;
+      letter-spacing: -0.8px;
+    }
+
+    .score-total {
+      display: flex;
+      gap: 18px;
+      align-items: center;
+      background: var(--primary);
+      color: white;
+      padding: 20px;
+      border-radius: 22px;
+      margin-bottom: 18px;
+    }
+
+    .score-total-number {
+      font-size: 58px;
+      line-height: 1;
+      font-weight: 950;
+      min-width: 160px;
+      text-align: center;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .score-total-label {
+      font-size: 22px;
+      font-weight: 900;
+      margin-bottom: 4px;
+    }
+
+    .score-note {
+      opacity: 0.86;
+      line-height: 1.35;
+    }
+
+    .score-table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      margin: 18px 0;
+    }
+
+    .score-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 640px;
+      background: white;
+    }
+
+    .score-table th,
+    .score-table td {
+      text-align: left;
+      padding: 14px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    .score-table th {
+      background: var(--soft);
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--muted);
+    }
+
+    .score-table td:nth-child(2) {
+      font-weight: 900;
+      white-space: nowrap;
+      font-size: 18px;
+    }
+
+    .evaluation-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 16px;
+    }
+
+    .evaluation-box,
+    .brief-evaluation {
+      background: var(--soft);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+    }
+
+    .evaluation-box h3,
+    .brief-evaluation h3 {
+      margin-top: 0;
+    }
+
+    .evaluation-box li {
+      margin-bottom: 8px;
+      line-height: 1.35;
+    }
+
+    .brief-evaluation p {
+      margin-bottom: 0;
+      line-height: 1.5;
+      font-size: 17px;
+    }
+
+    .full-width {
+      width: 100%;
+      margin-top: 16px;
+    }
+
+
     @media (max-width: 840px) {
       body {
         padding-bottom: 92px;
@@ -491,6 +626,92 @@
         font-size: 12px;
         padding: 8px 10px;
       }
+
+      .score-screen {
+        padding: 10px 10px 96px;
+      }
+
+      .score-card {
+        padding: 14px;
+        border-radius: 18px;
+      }
+
+      .score-header {
+        align-items: center;
+      }
+
+      #scoreTitle {
+        font-size: 24px;
+      }
+
+      .score-header button {
+        font-size: 13px;
+        padding: 10px 12px;
+      }
+
+      .score-total {
+        padding: 14px;
+        border-radius: 18px;
+        gap: 12px;
+      }
+
+      .score-total-number {
+        font-size: 42px;
+        min-width: 96px;
+      }
+
+      .score-total-label {
+        font-size: 17px;
+      }
+
+      .score-note {
+        font-size: 13px;
+      }
+
+      .score-table {
+        min-width: 0;
+      }
+
+      .score-table thead {
+        display: none;
+      }
+
+      .score-table,
+      .score-table tbody,
+      .score-table tr,
+      .score-table td {
+        display: block;
+        width: 100%;
+      }
+
+      .score-table tr {
+        border-bottom: 1px solid var(--border);
+        padding: 12px;
+      }
+
+      .score-table td {
+        border-bottom: 0;
+        padding: 5px 0;
+      }
+
+      .score-table td::before {
+        content: attr(data-label);
+        display: block;
+        font-size: 11px;
+        font-weight: 900;
+        text-transform: uppercase;
+        color: var(--muted);
+        letter-spacing: 0.6px;
+        margin-bottom: 2px;
+      }
+
+      .evaluation-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .brief-evaluation p {
+        font-size: 15px;
+      }
     }
   </style>
 </head>
@@ -559,6 +780,7 @@
       <div class="transcript-header">
         <h2 class="transcript-title">Transcript</h2>
         <div class="transcript-actions">
+          <button class="primary" onclick="scoreSpeech()">Score Speech</button>
           <button class="secondary" onclick="copyTranscript()">Copy Transcript</button>
           <button class="secondary" onclick="downloadTranscript()">Download Transcript</button>
           <button class="secondary" onclick="clearTranscript()">Clear</button>
@@ -568,6 +790,59 @@
       <div id="transcript">Transcript will appear here when recording starts.</div>
     </section>
   </main>
+
+
+  <section id="scoreScreen" class="score-screen" style="display:none;">
+    <div class="score-card">
+      <div class="score-header">
+        <div>
+          <div class="card-label">Speech evaluation</div>
+          <h2 id="scoreTitle">Table Topics Score</h2>
+        </div>
+        <button class="secondary" onclick="backToApp()">← Back</button>
+      </div>
+
+      <div class="score-total">
+        <div class="score-total-number" id="scoreTotal">0/100</div>
+        <div>
+          <div class="score-total-label">Estimated total score</div>
+          <div class="score-note">Transcript-based score. Physical delivery and voice are estimated only.</div>
+        </div>
+      </div>
+
+      <div class="score-table-wrap">
+        <table class="score-table">
+          <thead>
+            <tr>
+              <th>Rubric Area</th>
+              <th>Score</th>
+              <th>Comment</th>
+            </tr>
+          </thead>
+          <tbody id="scoreRows"></tbody>
+        </table>
+      </div>
+
+      <div class="evaluation-grid">
+        <div class="evaluation-box">
+          <h3>Strengths</h3>
+          <ul id="strengthsList"></ul>
+        </div>
+
+        <div class="evaluation-box">
+          <h3>Improve Next Time</h3>
+          <ul id="improvementsList"></ul>
+        </div>
+      </div>
+
+      <div class="brief-evaluation">
+        <h3>Brief Evaluation</h3>
+        <p id="briefEvaluation"></p>
+      </div>
+
+      <button class="primary full-width" onclick="backToApp()">Back to App</button>
+    </div>
+  </section>
 
   <div class="mobile-core-actions">
     <button class="secondary" onclick="newQuestion()">🎲 New</button>
@@ -908,6 +1183,251 @@ function escapeHtml(text) {
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
 }
+
+
+function scoreSpeech() {
+  const text = transcriptText.trim();
+
+  if (!text) {
+    alert("No transcript available yet. Record a response first, then try scoring.");
+    return;
+  }
+
+  const result = evaluateTranscript(text);
+
+  document.querySelector(".page").style.display = "none";
+  const mobileActions = document.querySelector(".mobile-core-actions");
+  if (mobileActions) mobileActions.style.display = "none";
+
+  document.getElementById("scoreScreen").style.display = "block";
+  document.body.classList.remove("flash", "green", "orange", "red");
+
+  document.getElementById("scoreTotal").innerText = result.total + "/100";
+
+  const rows = document.getElementById("scoreRows");
+  rows.innerHTML = "";
+
+  result.sections.forEach(section => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td data-label="Rubric Area"><strong>${section.name}</strong><br><span style="color:#667085;">${section.criteria}</span></td>
+      <td data-label="Score">${section.score}/${section.max}</td>
+      <td data-label="Comment">${section.comment}</td>
+    `;
+    rows.appendChild(row);
+  });
+
+  const strengths = document.getElementById("strengthsList");
+  strengths.innerHTML = "";
+  result.strengths.forEach(item => {
+    const li = document.createElement("li");
+    li.innerText = item;
+    strengths.appendChild(li);
+  });
+
+  const improvements = document.getElementById("improvementsList");
+  improvements.innerHTML = "";
+  result.improvements.forEach(item => {
+    const li = document.createElement("li");
+    li.innerText = item;
+    improvements.appendChild(li);
+  });
+
+  document.getElementById("briefEvaluation").innerText = result.brief;
+  window.scrollTo(0, 0);
+}
+
+function backToApp() {
+  document.getElementById("scoreScreen").style.display = "none";
+  document.querySelector(".page").style.display = "block";
+
+  const mobileActions = document.querySelector(".mobile-core-actions");
+  if (mobileActions) {
+    mobileActions.style.display = window.innerWidth <= 840 ? "grid" : "none";
+  }
+
+  window.scrollTo(0, 0);
+}
+
+function evaluateTranscript(text) {
+  const lower = text.toLowerCase();
+  const words = lower.match(/\b[\w']+\b/g) || [];
+  const wordCount = words.length;
+  const sentences = text.split(/[.!?]+/).map(s => s.trim()).filter(Boolean);
+  const sentenceCount = Math.max(sentences.length, 1);
+  const avgSentenceLength = wordCount / sentenceCount;
+  const uniqueWords = new Set(words).size;
+  const lexicalVariety = wordCount ? uniqueWords / wordCount : 0;
+
+  const openingWords = ["today", "imagine", "first", "i believe", "let me", "there are", "when", "if"];
+  const closingWords = ["finally", "in conclusion", "so", "therefore", "ultimately", "the lesson", "that is why"];
+  const logicWords = ["because", "therefore", "so", "first", "second", "finally", "for example", "however", "but", "then"];
+  const enthusiasmWords = ["exciting", "amazing", "love", "brilliant", "fantastic", "funny", "surprising", "important", "memorable"];
+  const fillerWords = ["um", "uh", "like", "you know", "sort of", "kind of", "basically", "actually"];
+
+  const hasOpening = containsAny(lower, openingWords);
+  const hasClosing = containsAny(lower, closingWords);
+  const logicCount = countMatches(lower, logicWords);
+  const enthusiasmCount = countMatches(lower, enthusiasmWords);
+  const fillerCount = countMatches(lower, fillerWords);
+
+  let speechDevelopment = 14;
+  if (wordCount >= 80) speechDevelopment += 4;
+  if (wordCount >= 130) speechDevelopment += 3;
+  if (hasOpening) speechDevelopment += 3;
+  if (hasClosing) speechDevelopment += 3;
+  if (logicCount >= 2) speechDevelopment += 3;
+  speechDevelopment = clamp(speechDevelopment, 0, 30);
+
+  let effectiveness = 10;
+  if (wordCount >= 70) effectiveness += 3;
+  if (logicCount >= 2) effectiveness += 4;
+  if (enthusiasmCount >= 1) effectiveness += 3;
+  if (sentenceCount >= 4) effectiveness += 2;
+  if (lexicalVariety > 0.55) effectiveness += 3;
+  effectiveness = clamp(effectiveness, 0, 25);
+
+  const physical = 9;
+  const physicalComment = "Estimated only. Transcript cannot judge appearance, body language, or use of the speaking area.";
+
+  let voice = 9;
+  if (avgSentenceLength >= 8 && avgSentenceLength <= 24) voice += 2;
+  if (sentenceCount >= 4) voice += 1;
+  voice = clamp(voice, 0, 15);
+  const voiceComment = "Estimated from pacing and sentence rhythm only. Audio analysis would be needed for volume and vocal variety.";
+
+  let appropriateness = 5;
+  if (wordCount >= 50) appropriateness += 2;
+  if (wordCount <= 260) appropriateness += 2;
+  if (fillerCount <= 3) appropriateness += 1;
+  appropriateness = clamp(appropriateness, 0, 10);
+
+  let correctness = 2;
+  if (avgSentenceLength >= 6 && avgSentenceLength <= 28) correctness += 1;
+  if (lexicalVariety > 0.45) correctness += 1;
+  if (fillerCount <= 4) correctness += 1;
+  correctness = clamp(correctness, 0, 5);
+
+  const total = speechDevelopment + effectiveness + physical + voice + appropriateness + correctness;
+
+  const sections = [
+    {
+      name: "Speech Development",
+      criteria: "Opening, body, close, organisation, smoothness",
+      score: speechDevelopment,
+      max: 30,
+      comment: commentFor(speechDevelopment, 30, "Clear structure and development.", "Structure is emerging, but could be more deliberate.", "Needs a clearer opening, body, and close.")
+    },
+    {
+      name: "Effectiveness",
+      criteria: "Logic, directness, enthusiasm, purpose, audience response",
+      score: effectiveness,
+      max: 25,
+      comment: commentFor(effectiveness, 25, "Purpose comes through clearly with good directness.", "Good ideas, but the message could land more strongly.", "Needs stronger purpose, examples, and audience connection.")
+    },
+    {
+      name: "Physical",
+      criteria: "Appearance, body language, speaking area",
+      score: physical,
+      max: 15,
+      comment: physicalComment
+    },
+    {
+      name: "Voice",
+      criteria: "Flexibility, volume",
+      score: voice,
+      max: 15,
+      comment: voiceComment
+    },
+    {
+      name: "Appropriateness",
+      criteria: "To speech purpose and audience",
+      score: appropriateness,
+      max: 10,
+      comment: commentFor(appropriateness, 10, "Appropriate length and tone for a Table Topic.", "Mostly appropriate, but could be sharper for the prompt.", "May need a tighter response to the question.")
+    },
+    {
+      name: "Correctness",
+      criteria: "Grammar, pronunciation, word selection",
+      score: correctness,
+      max: 5,
+      comment: commentFor(correctness, 5, "Good word choice and clarity.", "Generally clear with some rough edges.", "Needs cleaner wording and sentence control.")
+    }
+  ];
+
+  const strengths = [];
+  if (hasOpening) strengths.push("The response appears to start with a clear opening.");
+  if (logicCount >= 2) strengths.push("There are useful linking words that help the speech flow logically.");
+  if (lexicalVariety > 0.5) strengths.push("The vocabulary has good variety for an impromptu response.");
+  if (wordCount >= 80 && wordCount <= 230) strengths.push("The response length is well suited to a Table Topic.");
+  if (strengths.length === 0) strengths.push("You got words out under pressure — the first victory in Table Topics.");
+
+  const improvements = [];
+  if (!hasOpening) improvements.push("Start with a stronger opening line that directly frames your answer.");
+  if (!hasClosing) improvements.push("Add a clear closing sentence so the response lands with impact.");
+  if (logicCount < 2) improvements.push("Use signposting such as first, because, for example, and finally.");
+  if (fillerCount > 3) improvements.push("Reduce filler words and use short pauses instead.");
+  if (wordCount < 60) improvements.push("Develop the answer with one example or mini-story.");
+  if (wordCount > 260) improvements.push("Tighten the answer so it finishes before the red light starts judging you.");
+  if (improvements.length === 0) improvements.push("Next step: add more vocal variety and a memorable closing line.");
+
+  const brief = makeBriefEvaluation(total, wordCount, hasOpening, hasClosing, logicCount);
+
+  return { total, sections, strengths: strengths.slice(0, 3), improvements: improvements.slice(0, 3), brief };
+}
+
+function makeBriefEvaluation(total, wordCount, hasOpening, hasClosing, logicCount) {
+  let level = "developing";
+  if (total >= 80) level = "strong";
+  else if (total >= 65) level = "solid";
+
+  let brief = "This was a " + level + " Table Topics response based on the transcript. ";
+  brief += "It ran to approximately " + wordCount + " words. ";
+
+  if (hasOpening && hasClosing) {
+    brief += "It appears to have both an opening and a close, which gives it a complete shape. ";
+  } else if (hasOpening) {
+    brief += "It starts reasonably well, but would benefit from a more deliberate close. ";
+  } else if (hasClosing) {
+    brief += "It has some sense of conclusion, but needs a stronger opening. ";
+  } else {
+    brief += "The biggest opportunity is to shape it with a clear opening and closing sentence. ";
+  }
+
+  if (logicCount >= 2) {
+    brief += "The use of linking language helps the logic flow.";
+  } else {
+    brief += "Adding signposts and one concrete example would make the answer easier to follow.";
+  }
+
+  return brief;
+}
+
+function containsAny(text, phrases) {
+  return phrases.some(phrase => text.includes(phrase));
+}
+
+function countMatches(text, phrases) {
+  let count = 0;
+  phrases.forEach(phrase => {
+    const escaped = phrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const matches = text.match(new RegExp("\\b" + escaped + "\\b", "g"));
+    if (matches) count += matches.length;
+  });
+  return count;
+}
+
+function clamp(value, min, max) {
+  return Math.max(min, Math.min(max, value));
+}
+
+function commentFor(score, max, high, mid, low) {
+  const ratio = score / max;
+  if (ratio >= 0.8) return high;
+  if (ratio >= 0.55) return mid;
+  return low;
+}
+
 
 newQuestion();
 </script>
